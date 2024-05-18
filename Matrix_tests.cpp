@@ -183,6 +183,39 @@ TEST(test_max_2) {
     ASSERT_EQUAL(Matrix_max(&mat), correct);
 }
 
+// Test for function Matrix_min_value_in_row
+// find the min
+TEST(test_Matrix_min_value_in_row_1){
+  Matrix mat;
+  const int width = 3;
+  const int height = 3;
+  Matrix_init(&mat, width, height);
+  mat.data = {3,1,7,8,0,6,3,3,5};
+  int correct =0;
+  ASSERT_EQUAL(Matrix_min_value_in_row(&mat,1,0,3), correct);
+}
 
+// Test for function Matrix_min_value_in_row
+// find the min when there is a smaller value outside of the given row
+TEST(test_Matrix_min_value_in_row_2){
+  Matrix mat;
+  const int width = 3;
+  const int height = 3;
+  Matrix_init(&mat, width, height);
+  mat.data = {3,0,7,8,1,6,3,0,5};
+  int correct =1;
+  ASSERT_EQUAL(Matrix_min_value_in_row(&mat,1,0,3), correct);
+}
+// Test for function Matrix_min_value_in_row
+// find the min when there is a bigger scope with a smaller value outside of the given row and column
+TEST(test_Matrix_min_value_in_row_3){
+  Matrix mat;
+  const int width = 4;
+  const int height = 4;
+  Matrix_init(&mat, width, height);
+  mat.data = {3,1,7,0,1,6,3,0,5,7,8,9,10,2,0,8};
+  int correct =3;
+  ASSERT_EQUAL(Matrix_min_value_in_row(&mat,1,1,3), correct);
+}
 
 TEST_MAIN() // Do NOT put a semicolon here
