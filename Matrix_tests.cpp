@@ -183,6 +183,20 @@ TEST(test_max_2) {
     ASSERT_EQUAL(Matrix_max(&mat), correct);
 }
 
+//Test for function Matrix_column_of_min_value_in_row
+TEST(test_Matrix_column_of_min_value_in_row){
+  Matrix mat;
+  const int width = 4;
+  const int height = 4;
+  Matrix_init(&mat, width, height);
+  mat.data = {3,6,7,1,
+              1,6,3,0,
+              0,7,8,9,
+              10,2,0,8};
+  int correct =3;
+  ASSERT_EQUAL(Matrix_column_of_min_value_in_row(&mat,1,0,4), correct);
+}
+
 // Test for function Matrix_min_value_in_row
 // find the min
 TEST(test_Matrix_min_value_in_row_1){
