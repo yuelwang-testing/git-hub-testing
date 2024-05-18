@@ -154,21 +154,21 @@ int Matrix_max(const Matrix* mat) {
 //           the leftmost one.
 int Matrix_column_of_min_value_in_row(const Matrix* mat, int row,
                                       int column_start, int column_end) {
-    assert(mat != nullptr);
-    assert(0 <= row && row < mat->height);
-    assert(0 <= column_start && column_end <= mat->width);
-    assert(column_start < column_end);
-    int * ptr;
-    int min = mat->data[column_start];
-    for(size_t row = 0; row < mat->height; ++row){
-        for(size_t col =column_start; col < column_end; ++col){
-            if(mat->data[row * mat->width + col]< min){
-                min = mat->data[row * mat->width + col];
-                *ptr = min;
-            }
-        }
+  assert(mat != nullptr);
+  assert(0 <= row && row < mat->height);
+  assert(0 <= column_start && column_end <= mat->width);
+  assert(column_start < column_end);
+
+  int min = mat->data[row* mat->width+column_start];
+  int *ptr;
+  for(size_t col =column_start; col < column_end; ++col){
+    if(mat->data[row* mat->width + col]< min){
+      min = mat->data[row* mat->width + col];
+      ptr = &min; 
     }
-    return Matrix_column(mat, ptr);
+  }
+  int ans =  Matrix_column(mat, ptr);
+  return ans;
 }
 
 // REQUIRES: mat points to a valid Matrix
@@ -184,14 +184,12 @@ int Matrix_min_value_in_row(const Matrix* mat, int row,
   assert(0 <= row && row < mat->height);
   assert(0 <= column_start && column_end <= mat->width);
   assert(column_start < column_end);
-  int min = mat->data[column_start];
-    for(size_t row = 0; row < mat->height; ++row){
-        for(size_t col =column_start; col < column_end; ++col){
-            if(mat->data[row * mat->width + col]< min){
-                min = mat->data[row * mat->width + col];
-            }
-        }
-        return min;
+  int min = mat->data[row* mat->width+column_start];
+  for(size_t col =column_start; col < column_end; ++col){
+      if(mat->data[row* mat->width + col]< min){
+        min = mat->data[row* mat->width + col];
     }
-    return 1;
+  }
+  return min;
 }
+
