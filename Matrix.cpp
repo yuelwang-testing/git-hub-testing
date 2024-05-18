@@ -138,9 +138,8 @@ int Matrix_max(const Matrix* mat) {
                 max = *Matrix_at(mat, j, i);
             }
         }
-        return max;
     }
-    return 1;
+    return max;
 }
 
 // REQUIRES: mat points to a valid Matrix
