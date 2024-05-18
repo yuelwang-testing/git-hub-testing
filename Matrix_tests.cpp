@@ -1,6 +1,7 @@
 #include "Matrix.hpp"
 #include "Matrix_test_helpers.hpp"
 #include "unit_test_framework.hpp"
+#include <sstream>
 
 using namespace std;
 
@@ -74,6 +75,114 @@ TEST(test_row) {
     
     ASSERT_EQUAL(Matrix_row(&mat, ptr), correct);
 }
+
+// 这个是测试"Matrix_column"的
+TEST(test_column) {
+    Matrix mat;
+    Matrix_init(&mat, 6, 5);
+    // 与上面的同理的问题
+    int *ptr = mat.data.data() + 27;
+    int correct = 3;
+    
+    ASSERT_EQUAL(Matrix_column(&mat, ptr), correct);
+}
+
+// 这个是测试"Matrix_width"的
+TEST(test_width) {
+    Matrix mat;
+    Matrix_init(&mat, 6, 5);
+    int correct = 6;
+    
+    ASSERT_EQUAL(Matrix_width(&mat), correct);
+}
+
+// 这个是测试"Matrix_height"的
+TEST(test_height) {
+    Matrix mat;
+    Matrix_init(&mat, 6, 5);
+    int correct = 5;
+    
+    ASSERT_EQUAL(Matrix_height(&mat), correct);
+}
+
+// 这个是"Matrix_print"的第一轮测试
+TEST(test_print_1) {
+    Matrix mat;
+    Matrix_init(&mat, 2, 2);
+    
+    // 这里我也是直接地访问"Matrix"这个struct的内部变量（member variable），如果要按照指导方针的话，
+    // 应该是用“*Matrix_at(&mat, a, b) = c;”这个格式一个一个写的，我们现在就先不管，直接访问内部变量吧
+    mat.data = {0, 2, -5, 78};
+    ostringstream expected;
+    expected << "2 2\n"
+    << "0 2 \n"
+    << "-5 78 \n";
+    ostringstream actual;
+    Matrix_print(&mat, actual);
+    ASSERT_EQUAL(expected.str(), actual.str());
+}
+
+// 这个是"Matrix_print"的第二轮测试
+TEST(test_print_2) {
+    Matrix mat;
+    Matrix_init(&mat, 2, 3);
+    
+    // 同上
+    mat.data = {6, 9, -3, 7, 0, 17};
+    ostringstream expected;
+    expected << "2 3\n"
+    << "6 9 \n"
+    << "-3 7 \n"
+    << "0 17 \n";
+    ostringstream actual;
+    Matrix_print(&mat, actual);
+    ASSERT_EQUAL(expected.str(), actual.str());
+}
+
+// 这个是"Matrix_fill_border"的第一轮测试
+TEST(test_fill_border_1) {
+    Matrix mat;
+    Matrix_init(&mat, 3, 4);
+    Matrix_fill_border(&mat, 5);
+    int correct = 5;
+    ASSERT_EQUAL(*Matrix_at(&mat, 0, 2), correct);
+    ASSERT_EQUAL(*Matrix_at(&mat, 2, 0), correct);
+    ASSERT_EQUAL(*Matrix_at(&mat, 3, 1), 5);
+}
+
+// 这个是"Matrix_fill_border"的第二轮测试
+TEST(test_fill_border_2) {
+    Matrix mat;
+    Matrix_init(&mat, 5, 4);
+    Matrix_fill_border(&mat, -239);
+    int correct = -239;
+    ASSERT_EQUAL(*Matrix_at(&mat, 0, 2), correct);
+    ASSERT_EQUAL(*Matrix_at(&mat, 2, 4), correct);
+    ASSERT_EQUAL(*Matrix_at(&mat, 3, 1), -239);
+}
+
+// 这个是"Matrix_max"的第一轮测试
+TEST(test_max_1) {
+    Matrix mat;
+    Matrix_init(&mat, 3, 2);
+    
+    // 同样直接访问了内部变量
+    mat.data = {6, 9, -3, 7, 0, 17};
+    int correct = 17;
+    ASSERT_EQUAL(Matrix_max(&mat), correct);
+}
+
+// 这个是"Matrix_max"的第二轮测试
+TEST(test_max_2) {
+    Matrix mat;
+    Matrix_init(&mat, 2, 3);
+    
+    // 同上
+    mat.data = {-6, -9, -3, -7, -10, -17};
+    int correct = -3;
+    ASSERT_EQUAL(Matrix_max(&mat), correct);
+}
+
 
 
 TEST_MAIN() // Do NOT put a semicolon here
