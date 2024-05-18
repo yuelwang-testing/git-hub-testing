@@ -134,8 +134,8 @@ int Matrix_max(const Matrix* mat) {
   int max = mat->data[0];
     for(size_t i =0; i < mat->height; ++i){
         for(size_t j =0; j < mat->width; ++j){
-            if(*Matrix_at(mat, j, i) > max){
-                max = *Matrix_at(mat, j, i);
+            if(*Matrix_at(mat, i, j) > max){
+                max = *Matrix_at(mat, i, j);
             }
         }
     }
