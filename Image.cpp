@@ -27,23 +27,23 @@ void Image_init(Image* img, int width, int height) {
 //           from the given input stream.
 // NOTE:     See the project spec for a discussion of PPM format.
 void Image_init(Image* img, std::istream& is) {
-  assert(img != nullptr);
-  is >> ??;
-  assert( ?? = "P3");
-  int max_value;
-  is >> img->height >> img->width >> max_value;
-
-  int r;
-  int g;
-  int b;
-  Pixel color;
-  for (size_t i =0; i<img->height; ++i){
-    for(size_t j =0; j<img->width; ++j){
-      is >> r >> g >> b;
-      Image_set_pixel(img, i, j, color);
+    assert(img != nullptr);
+    string junk = "";
+    is >> junk;
+    assert(junk == "P3");
+    int max_value;
+    is >> img->height >> img->width >> max_value;
+    
+    int r;
+    int g;
+    int b;
+    Pixel color;
+    for (size_t i =0; i<img->height; ++i){
+        for(size_t j =0; j<img->width; ++j){
+            is >> r >> g >> b;
+            Image_set_pixel(img, i, j, color);
+        }
     }
-  }
-  
 }
 
 // REQUIRES: img points to a valid Image
