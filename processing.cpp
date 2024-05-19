@@ -124,31 +124,35 @@ void compute_energy_matrix(const Image* img, Matrix* energy) {
 void compute_vertical_cost_matrix(const Matrix* energy, Matrix *cost) {
   assert(cost != nullptr && energy != nullptr);
   assert(cost != energy);
-  Matrix_init(cost, Matrix_height(energy), Matrix_width(energy));
+  Matrix_init(cost, Matrix_width(energy), Matrix_height(energy));
 
   for(int i =0; i< Matrix_width(energy); ++i){
     *Matrix_at(cost, 0, i) = *Matrix_at(energy, 0, i);
   }
   
-  for(int row = 0; row < Matrix_height(energy); ++row){
+  for(int row = 1; row < Matrix_height(energy); ++row){
     for(int col =0; col < Matrix_width(energy); ++col){
-      int left = *Matrix_at(cost, row - 1, col - 1);
-      int up = *Matrix_at(cost, row - 1, col);
-      int right = *Matrix_at(cost, row - 1, col + 1);
+
       if(col == 0){
-        *Matrix_at(cost, row, col) = *Matrix_at(energy, row, col) + min(up, right);
+        int up = *Matrix_at(cost, row - 1, col);
+        int right = *Matrix_at(cost, row - 1, col + 1);
+        *Matrix_at(cost, row, col) = *Matrix_at(energy, row, col) + min(up,right);
       }
       else if (col == Matrix_width(energy)-1){
-        *Matrix_at(cost, row, col) = *Matrix_at(energy, row, col) + min(left, right);
+        int left = *Matrix_at(cost, row - 1, col - 1);
+        int up = *Matrix_at(cost, row - 1, col);
+        *Matrix_at(cost, row, col) = *Matrix_at(energy, row, col) + min(left, up);
       }
       else{
-        *Matrix_at(cost, row, col) = *Matrix_at(energy, row, col) + min(left, up, right);
+        int left = *Matrix_at(cost, row - 1, col - 1);
+        int up = *Matrix_at(cost, row - 1, col);
+        int right = *Matrix_at(cost, row - 1, col + 1);
+        *Matrix_at(cost, row, col) = *Matrix_at(energy, row, col) + min(left, min(up,right));
       }
 
     }
   }
 }
-
 // REQUIRES: cost points to a valid Matrix
 //           seam points to an array with >= Matrix_height(cost) elements
 // MODIFIES: seam[0]...seam[Matrix_height(cost)-1]
@@ -172,16 +176,16 @@ void find_minimal_vertical_seam(const Matrix* cost, int seam[]) {
     
     seam[Matrix_height(cost) - 1] = Matrix_column_of_min_value_in_row(cost, 
         Matrix_height(cost) - 1, 0, Matrix_width(cost) - 1);
-    for (size_t i = 1; i < Matrix_height(cost); i++) {
+    for (int i = 1; i < Matrix_height(cost); i++) {
         if ( (seam[Matrix_height(cost) - i] - 1) < 0) {
             left_boundary = 0;
         } else {
             left_boundary = seam[Matrix_height(cost) - i] - 1;
         }
         if ( (seam[Matrix_height(cost) - i] + 1) > (Matrix_width(cost) - 1) ) {
-            right_boundary = Matrix_width(cost) - 1;
+            right_boundary = Matrix_width(cost);
         } else {
-            right_boundary = seam[Matrix_height(cost) - i] + 1;
+            right_boundary = seam[Matrix_height(cost) - i] + 2;
         }
         seam[Matrix_height(cost) - i - 1] = Matrix_column_of_min_value_in_row(cost, 
             Matrix_height(cost) - i - 1, left_boundary, right_boundary);
@@ -216,9 +220,13 @@ void remove_vertical_seam(Image *img, const int seam[]) {
             Image_set_pixel(&new_one, i, j, Image_get_pixel(img, i, j + 1));
         }
     }
+    Image_init(img, Image_width(img) - 1, Image_height(img));
+    for (size_t i = 0; i < Image_height(&new_one); i++) {
+        for (size_t j = 0; j < Image_width(&new_one); j++) {
+            Image_set_pixel(img, i, j, Image_get_pixel(&new_one, i, j));
+        }
+    }
 }
-
-
 // REQUIRES: img points to a valid Image
 //           0 < newWidth && newWidth <= Image_width(img)
 // MODIFIES: *img
