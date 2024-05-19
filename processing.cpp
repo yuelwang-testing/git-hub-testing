@@ -86,8 +86,30 @@ static int squared_difference(Pixel p1, Pixel p2) {
 //           image is computed and written into it.
 //           See the project spec for details on computing the energy matrix.
 void compute_energy_matrix(const Image* img, Matrix* energy) {
-  assert(false); // TODO Replace with your implementation!
-  assert(squared_difference(Pixel(), Pixel())); // TODO delete me, this is here to make it compile
+  assert(img != nullptr && energy != nullptr);
+  
+  Matrix_init(energy, img->width, img->height);
+  
+  for (int row = 1; row < img->height - 1; ++row) {
+    for (int col = 1; col < img->width - 1; ++col) {
+      Pixel north = Image_get_pixel(img, row - 1, col);
+      Pixel south = Image_get_pixel(img, row + 1, col);
+      Pixel east = Image_get_pixel(img, row, col + 1);
+      Pixel west = Image_get_pixel(img, row, col - 1);
+      *Matrix_at(energy, row, col) = squared_difference(north, south) + squared_difference(west, east);
+    }
+  }
+  
+  int max_energy = 0;
+  for (int r = 1; r < img->height - 1; ++r) {
+    for (int c = 1; c < img->width - 1; ++c) {
+      if (*Matrix_at(energy, r, c) > max_energy) {
+        max_energy = *Matrix_at(energy, r, c);
+      }
+    }
+  }
+  
+ Matrix_fill_border(energy, max_energy);
 }
 
 
