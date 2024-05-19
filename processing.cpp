@@ -127,22 +127,22 @@ void compute_vertical_cost_matrix(const Matrix* energy, Matrix *cost) {
   Matrix_init(cost, Matrix_height(energy), Matrix_width(energy));
 
   for(int i =0; i< Matrix_width(energy); ++i){
-    *Matrix_at(&cost, 0, i) = *Matrix_at(&energy, 0, i);
+    *Matrix_at(cost, 0, i) = *Matrix_at(energy, 0, i);
   }
   
   for(int row = 0; row < Matrix_height(energy); ++row){
     for(int col =0; col < Matrix_width(energy); ++col){
-      int left = *Matrix_at(&cost, row - 1, col - 1);
-      int up = *Matrix_at(&cost, row - 1, col);
-      int right = *Matrix_at(&cost, row - 1, col + 1);
+      int left = *Matrix_at(cost, row - 1, col - 1);
+      int up = *Matrix_at(cost, row - 1, col);
+      int right = *Matrix_at(cost, row - 1, col + 1);
       if(col == 0){
-        *Matrix_at(&cost, row, col) = *Matrix_at(&energy, row, col) + min(up, right);
+        *Matrix_at(cost, row, col) = *Matrix_at(energy, row, col) + min(up, right);
       }
       else if (col == Matrix_width(energy)-1){
-        *Matrix_at(&cost, row, col) = *Matrix_at(&energy, row, col) + min(left, right);
+        *Matrix_at(cost, row, col) = *Matrix_at(energy, row, col) + min(left, right);
       }
       else{
-        *Matrix_at(&cost, row, col) = *Matrix_at(&energy, row, col) + min(left, up, right);
+        *Matrix_at(cost, row, col) = *Matrix_at(energy, row, col) + min(left, up, right);
       }
 
     }
@@ -214,7 +214,16 @@ void remove_vertical_seam(Image *img, const int seam[]) {
 //           the right size. You can use .data() on a vector to get
 //           the underlying array.
 void seam_carve_width(Image *img, int newWidth) {
-  assert(false); // TODO Replace with your implementation!
+  assert(img != nullptr);
+  assert(0 < newWidth && newWidth <= Image_width(img));
+  vector<int> seam(Image_height(img));
+  Matrix energy, cost;
+  while (Image_width(img) != newWidth) {
+    compute_energy_matrix(img, &energy);
+    compute_vertical_cost_matrix(&energy, &cost);
+    find_minimal_vertical_seam(&cost, seam.data());
+    remove_vertical_seam(img, seam.data());
+    }
 }
 
 // REQUIRES: img points to a valid Image
@@ -225,7 +234,11 @@ void seam_carve_width(Image *img, int newWidth) {
 //           then applying seam_carve_width(img, newHeight), then rotating
 //           90 degrees right.
 void seam_carve_height(Image *img, int newHeight) {
-  assert(false); // TODO Replace with your implementation!
+  assert(img != nullptr);
+  assert(0 < newHeight && newHeight <= Image_height(img));
+  rotate_left(img);
+  seam_carve_width(img, newHeight);
+  rotate_right(img);
 }
 
 // REQUIRES: img points to a valid Image
@@ -237,5 +250,9 @@ void seam_carve_height(Image *img, int newHeight) {
 // NOTE:     This is equivalent to applying seam_carve_width(img, newWidth)
 //           and then applying seam_carve_height(img, newHeight).
 void seam_carve(Image *img, int newWidth, int newHeight) {
-  assert(false); // TODO Replace with your implementation!
+  assert(img != nullptr);
+  assert(0 < newWidth && newWidth <= Image_width(img));
+  assert(0 < newHeight && newHeight <= Image_height(img));
+  seam_carve_width(img, newWidth);
+  seam_carve_height(img, newHeight);
 }
