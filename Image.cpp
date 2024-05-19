@@ -32,7 +32,11 @@ void Image_init(Image* img, std::istream& is) {
     is >> junk;
     assert(junk == "P3");
     int max_value;
-    is >> img->height >> img->width >> max_value;
+    is >> img->width >> img->height >> max_value;
+    
+    Matrix_init(&img->red_channel, img->width, img->height);
+    Matrix_init(&img->green_channel, img->width, img->height);
+    Matrix_init(&img->blue_channel, img->width, img->height);
     
     int r;
     int g;
@@ -41,6 +45,9 @@ void Image_init(Image* img, std::istream& is) {
     for (size_t i =0; i<img->height; ++i){
         for(size_t j =0; j<img->width; ++j){
             is >> r >> g >> b;
+            color.r = r;
+            color.g = g;
+            color.b = b;
             Image_set_pixel(img, i, j, color);
         }
     }
