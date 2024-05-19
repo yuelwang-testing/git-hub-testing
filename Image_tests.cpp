@@ -52,7 +52,7 @@ TEST(test_init) {
     Image_print(&img, answer);
     
     ostringstream correct;
-    correct << "P3\n2 2\n255\n";
+    correct << "P3\n3 2\n255\n";
     correct << "255 0 0 0 255 0 0 0 255 \n";
     correct << "0 0 255 0 255 0 255 0 0 \n";
     ASSERT_EQUAL(answer.str(), correct.str());
