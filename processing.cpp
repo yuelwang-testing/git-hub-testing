@@ -143,9 +143,28 @@ void compute_vertical_cost_matrix(const Matrix* energy, Matrix *cost) {
 //           with the bottom of the image and proceeding to the top,
 //           as described in the project spec.
 void find_minimal_vertical_seam(const Matrix* cost, int seam[]) {
-  assert(false); // TODO Replace with your implementation!
+    assert(cost != nullptr);
+    assert( (*(&seam + 1) - seam) >= Matrix_height(cost));
+    int left_boundary = 0;
+    int right_boundary = 0;
+    
+    seam[Matrix_height(cost) - 1] = Matrix_column_of_min_value_in_row(cost, 
+        Matrix_height(cost) - 1, 0, Matrix_width(cost) - 1);
+    for (size_t i = 1; i < Matrix_height(cost); i++) {
+        if ( (seam[Matrix_height(cost) - i] - 1) < 0) {
+            left_boundary = 0;
+        } else {
+            left_boundary = seam[Matrix_height(cost) - i] - 1;
+        }
+        if ( (seam[Matrix_height(cost) - i] + 1) > (Matrix_width(cost) - 1) ) {
+            right_boundary = Matrix_width(cost) - 1;
+        } else {
+            right_boundary = seam[Matrix_height(cost) - i] + 1;
+        }
+        seam[Matrix_height(cost) - i - 1] = Matrix_column_of_min_value_in_row(cost, 
+            Matrix_height(cost) - i - 1, left_boundary, right_boundary);
+    }
 }
-
 
 // REQUIRES: img points to a valid Image with width >= 2
 //           seam points to an array with >= Image_height(img) elements
