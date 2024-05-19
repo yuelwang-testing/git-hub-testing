@@ -201,7 +201,21 @@ void find_minimal_vertical_seam(const Matrix* cost, int seam[]) {
 //           then do an assignment at the end to copy it back into the
 //           original image.
 void remove_vertical_seam(Image *img, const int seam[]) {
-  assert(false); // TODO Replace with your implementation!
+    assert(img->width >= 2);
+    assert( (*(&seam + 1) - seam) >= Image_height(img) );
+    for (size_t i = 0; i < Image_height(img); i++) {
+        assert( (seam[i] >= 0) && (seam[i] <= Image_width(img)) );
+    }
+    Image new_one;
+    Image_init(&new_one, Image_width(img) - 1, Image_height(img));
+    for (size_t i = 0; i < Image_height(img); i++) {
+        for (size_t j = 0; j < seam[i]; j++) {
+            Image_set_pixel(&new_one, i, j, Image_get_pixel(img, i, j));
+        }
+        for (size_t j = seam[i]; j < Image_width(img) - 1; j++) {
+            Image_set_pixel(&new_one, i, j, Image_get_pixel(img, i, j + 1));
+        }
+    }
 }
 
 
