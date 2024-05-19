@@ -58,4 +58,47 @@ TEST(test_init) {
     ASSERT_EQUAL(answer.str(), correct.str());
 }
 
+// Test for function image_width
+TEST(test_Image_width){
+  Image img;
+  Image_init(&img, 3, 2);
+  int correct = 3;
+  ASSERT_EQUAL(Image_width(&img), correct);
+}
+
+// Test for function image_height
+TEST(test_Image_height){
+  Image img;
+  Image_init(&img, 3, 2);
+  int correct = 2;
+  ASSERT_EQUAL(Image_height(&img), correct);
+}
+//Test for function Image_get_pixel
+TEST(test_Image_get_pixel) {
+    Image img;
+    Image_init(&img, 3, 3);
+    int red_data[9] = {255, 0, 0, 0, 255, 0, 0, 0, 255};
+    int green_data[9] = {0, 255, 0, 0, 0, 255, 255, 0, 0};
+    int blue_data[9] = {0, 0, 255, 255, 0, 0, 0, 255, 0};
+
+    // Test some pixels
+    Pixel p = Image_get_pixel(&img, 0, 0);
+    assert(p.r == 255 && p.g == 0 && p.b == 0);
+
+    p = Image_get_pixel(&img, 1, 1);
+    assert(p.r == 255 && p.g == 0 && p.b == 0);
+
+    p = Image_get_pixel(&img, 2, 2);
+    assert(p.r == 255 && p.g == 0 && p.b == 0);
+
+    p = Image_get_pixel(&img, 0, 2);
+    assert(p.r == 0 && p.g == 0 && p.b == 255);
+
+    p = Image_get_pixel(&img, 2, 1);
+    assert(p.r == 0 && p.g == 255 && p.b == 0);
+
+    p = Image_get_pixel(&img, 1, 0);
+    assert(p.r == 0 && p.g == 0 && p.b == 255);
+
+}
 TEST_MAIN() // Do NOT put a semicolon here
