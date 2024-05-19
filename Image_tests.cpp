@@ -106,12 +106,12 @@ TEST(test_Image_fill){
  
     ostringstream s;
     Image_print(&img, s);
-    
+
     // Correct output
     ostringstream correct;
     correct << "P3\n3 2\n255\n";
-    correct << "255 255 255 255 255 255 \n";
-    correct << "255 255 255 255 255 255 \n";
+    correct << "255 255 255 255 255 255 255 255 255 \n";
+    correct << "255 255 255 255 255 255 255 255 255 \n";
     ASSERT_EQUAL(s.str(), correct.str());
 }
 
