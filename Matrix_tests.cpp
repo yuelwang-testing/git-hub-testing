@@ -67,17 +67,18 @@ TEST(test_row) {
     Matrix mat;
     Matrix_init(&mat, 6, 5);
     // 注意，在此项目的指导方针上面说到“Respect the interfaces for the modules you are testing. 
-    // Do not access member variables of the structs directly.” 也就是说我是不是不应该写“mat.data.data()”，
-    // 而是去用一个 Matrix.cpp 里面的一个方程来建立这个 pointer 呢（不过这些测试的cpp文件倒不会接受格式上的检查，
-    // 似乎只要能捕捉到所有的bug就可以了，所以我们现在要不就先这样写吧）
+    // Do not access member variables of the structs directly.” 也就是说我是不是不应该写
+    // “mat.data.data()”，而是去用一个 Matrix.cpp 里面的一个方程来建立这个 pointer 呢
+    //（不过这些测试的cpp文件倒不会接受格式上的检查，似乎只要能捕捉到所有的bug就可以了，所以我们现在要不就先这样写吧）
     int *ptr = mat.data.data() + 27;
     int correct = 4;
     
     ASSERT_EQUAL(Matrix_row(&mat, ptr), correct);
 }
 
-// 这个是测试"Matrix_column"的
-TEST(test_column) {
+
+// 这个是"Matrix_column"的第一轮测试
+TEST(test_column_1) {
     Matrix mat;
     Matrix_init(&mat, 6, 5);
     // 与上面的同理的问题
@@ -86,6 +87,18 @@ TEST(test_column) {
     
     ASSERT_EQUAL(Matrix_column(&mat, ptr), correct);
 }
+
+// 这个是"Matrix_column"的第二轮测试
+TEST(test_column_2) {
+    Matrix mat;
+    Matrix_init(&mat, 2, 1);
+    // 与上面的同理的问题
+    int *ptr = mat.data.data() + 1;
+    int correct = 1;
+    
+    ASSERT_EQUAL(Matrix_column(&mat, ptr), correct);
+}
+
 
 // 这个是测试"Matrix_width"的
 TEST(test_width) {
@@ -183,7 +196,29 @@ TEST(test_max_2) {
     ASSERT_EQUAL(Matrix_max(&mat), correct);
 }
 
-//Test for function Matrix_column_of_min_value_in_row
+// 这个是"Matrix_colum_of_min"的第一轮测试
+TEST(test_column_of_min_1) {
+    Matrix mat;
+    Matrix_init(&mat, 3, 2);
+    
+    // 同上
+    mat.data = {-6, -9, -3, -7, -10, -17};
+    int correct = 1;
+    ASSERT_EQUAL(Matrix_column_of_min_value_in_row(&mat, 0, 0, 3), correct);
+}
+
+// 这个是"Matrix_colum_of_min"的第二轮测试
+TEST(test_column_of_min_2) {
+    Matrix mat;
+    Matrix_init(&mat, 3, 2);
+    
+    // 同上
+    mat.data = {-6, -9, -3, -7, -10, -17};
+    int correct = 2;
+    ASSERT_EQUAL(Matrix_column_of_min_value_in_row(&mat, 1, 0, 3), correct);
+}
+
+// Test for function Matrix_column_of_min_value_in_row
 TEST(test_Matrix_column_of_min_value_in_row){
   Matrix mat;
   const int width = 4;
@@ -220,8 +255,10 @@ TEST(test_Matrix_min_value_in_row_2){
   int correct =1;
   ASSERT_EQUAL(Matrix_min_value_in_row(&mat,1,0,3), correct);
 }
+
 // Test for function Matrix_min_value_in_row
-// find the min when there is a bigger scope with a smaller value outside of the given row and column
+// find the min when there is a bigger scope with a smaller 
+// value outside of the given row and column
 TEST(test_Matrix_min_value_in_row_3){
   Matrix mat;
   const int width = 4;
