@@ -112,7 +112,6 @@ void compute_energy_matrix(const Image* img, Matrix* energy) {
  Matrix_fill_border(energy, max_energy);
 }
 
-
 // REQUIRES: energy points to a valid Matrix.
 //           cost points to a Matrix.
 //           energy and cost aren't pointing to the same Matrix
@@ -123,9 +122,32 @@ void compute_energy_matrix(const Image* img, Matrix* energy) {
 //           computed and written into it.
 //           See the project spec for details on computing the cost matrix.
 void compute_vertical_cost_matrix(const Matrix* energy, Matrix *cost) {
-  assert(false); // TODO Replace with your implementation!
-}
+  assert(cost != nullptr && energy != nullptr);
+  assert(cost != energy);
+  Matrix_init(cost, Matrix_height(energy), Matrix_width(energy));
 
+  for(int i =0; i< Matrix_width(energy); ++i){
+    *Matrix_at(&cost, 0, i) = *Matrix_at(&energy, 0, i);
+  }
+  
+  for(int row = 0; row < Matrix_height(energy); ++row){
+    for(int col =0; col < Matrix_width(energy); ++col){
+      int left = *Matrix_at(&cost, row - 1, col - 1);
+      int up = *Matrix_at(&cost, row - 1, col);
+      int right = *Matrix_at(&cost, row - 1, col + 1);
+      if(col == 0){
+        *Matrix_at(&cost, row, col) = *Matrix_at(&energy, row, col) + min(up, right);
+      }
+      else if (col == Matrix_width(energy)-1){
+        *Matrix_at(&cost, row, col) = *Matrix_at(&energy, row, col) + min(left, right);
+      }
+      else{
+        *Matrix_at(&cost, row, col) = *Matrix_at(&energy, row, col) + min(left, up, right);
+      }
+
+    }
+  }
+}
 
 // REQUIRES: cost points to a valid Matrix
 //           seam points to an array with >= Matrix_height(cost) elements
