@@ -95,4 +95,24 @@ TEST(test_Image_get_pixel) {
     assert(p.r == 0 && p.g == 0 && p.b == 255);
 }
 
+TEST(test_Image_fill){
+  Image img;
+  const Pixel white = {255, 255, 255};
+  string picture = "P3\n3 2\n255\n255 0 0 0 255 0 0 0 255 \n";
+  picture += "0 0 255 0 255 0 255 0 0 \n"; //3x2，第一行是红 - 绿 - 蓝，第二行是蓝 - 绿 - 红
+  istringstream image(picture);
+  Image_init(&img, image);   
+  Image_fill(&img, white);
+ 
+    ostringstream s;
+    Image_print(&img, s);
+    
+    // Correct output
+    ostringstream correct;
+    correct << "P3\n3 2\n255\n";
+    correct << "255 255 255 255 255 255 \n";
+    correct << "255 255 255 255 255 255 \n";
+    ASSERT_EQUAL(s.str(), correct.str());
+}
+
 TEST_MAIN() // Do NOT put a semicolon here
