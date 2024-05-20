@@ -173,10 +173,7 @@ void compute_vertical_cost_matrix(const Matrix* energy, Matrix *cost) {
 //           as described in the project spec.
 void find_minimal_vertical_seam(const Matrix* cost, int seam[]) {
     assert(cost != nullptr);
-    // 由于实在是没有确定 seam 的元素的数量的方法，我就直接不测了，分数也不会影响
-    assert(true);
-     
-    
+  
     int left_boundary = 0;
     int right_boundary = 0;
     
@@ -212,8 +209,6 @@ void find_minimal_vertical_seam(const Matrix* cost, int seam[]) {
 //           original image.
 void remove_vertical_seam(Image *img, const int seam[]) {
     assert(Image_width(img) >= 2);
-    // 由于实在是没有确定 seam 的元素的数量的方法，我就直接不测了，分数也不会影响
-    assert(true);
     
     for (size_t i = 0; i < Image_height(img); i++) {
         assert( (seam[i] >= 0) && (seam[i] <= Image_width(img)) );
